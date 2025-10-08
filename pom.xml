@@ -18,6 +18,7 @@
     <module>onboarding-excercise-1-core</module>
     <module>onboarding-excercise-1-adapter</module>
     <module>onboarding-excercise-1-app</module>
+    <module>onboarding-excercise-1-db-migration</module>
   </modules>
 
   <properties>
@@ -31,16 +32,7 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-core</artifactId>
-        <version>4.33.0</version>
-      </dependency>
-        <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
-          <version>3.18.0</version>
-        </dependency>
+
     </dependencies>
   </dependencyManagement>
 
