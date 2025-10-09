@@ -1,11 +1,15 @@
 package com.netcompany.onboardingexercise1.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netcompany.onboardingexercise1.rest.common.dto.Create;
 import com.netcompany.onboardingexercise1.rest.common.dto.Update;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Data
@@ -28,11 +32,13 @@ public class Person {
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Tax number is required")
+    @NotBlank(groups = Create.class, message = "Tax number is required")
     @Size(max = 32)
-    @Null(groups = Update.class, message = "Tax number cannot be changed")
     private String taxNumber;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer age;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long taxDebt;
 }

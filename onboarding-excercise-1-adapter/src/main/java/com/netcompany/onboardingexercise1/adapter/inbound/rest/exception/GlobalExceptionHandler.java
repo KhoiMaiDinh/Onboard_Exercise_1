@@ -41,10 +41,10 @@ public class GlobalExceptionHandler {
                 ex.getConstraintViolations().stream().map(v -> new ValidationError(v.getPropertyPath().toString(), v.getMessage())).toList();
         String stackTrace = getStackTrace(ex);
         ErrorResponse error =
-                new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Bad Request", "Validation failed", request.getRequestURI(), violations,
+                new ErrorResponse(Instant.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), HttpStatus.UNPROCESSABLE_ENTITY.toString(), "Validation failed", request.getRequestURI(), violations,
                         stackTrace);
 
-        return ResponseEntity.badRequest().body(error);
+        return ResponseEntity.unprocessableEntity().body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -53,9 +53,18 @@ public class GlobalExceptionHandler {
                 ex.getBindingResult().getFieldErrors().stream().map(err -> new ValidationError(err.getField(), err.getDefaultMessage())).toList();
         String stackTrace = getStackTrace(ex);
         ErrorResponse error =
-                new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Bad Request", "Validation failed", request.getRequestURI(), violations,
+                new ErrorResponse(Instant.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), HttpStatus.UNPROCESSABLE_ENTITY.toString(), "Validation failed", request.getRequestURI(), violations,
                         stackTrace);
-        return ResponseEntity.badRequest().body(error);
+        return ResponseEntity.unprocessableEntity().body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        String stackTrace = getStackTrace(ex);
+        ErrorResponse error =
+                new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.toString(), ex.getMessage(), request.getRequestURI(), null, stackTrace);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -71,7 +80,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUnexpectedError(Exception ex, HttpServletRequest request) {
         logger.error("Unexpected error occurred", ex);
         String stackTrace = getStackTrace(ex);
-        ErrorResponse error = new ErrorResponse(Instant.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", "Unexpected error occurred",
+        ErrorResponse error = new ErrorResponse(Instant.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Unexpected error occurred",
                 request.getRequestURI(), null, stackTrace);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }

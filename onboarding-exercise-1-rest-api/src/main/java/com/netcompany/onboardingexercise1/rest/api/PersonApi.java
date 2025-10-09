@@ -2,6 +2,7 @@ package com.netcompany.onboardingexercise1.rest.api;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netcompany.onboardingexercise1.rest.common.dto.Create;
 import com.netcompany.onboardingexercise1.rest.common.dto.Update;
 import com.netcompany.onboardingexercise1.rest.dto.Person;
@@ -9,6 +10,8 @@ import com.netcompany.onboardingexercise1.rest.dto.PersonFilterRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +29,8 @@ public interface PersonApi {
     String BASE_URL = "/people";
 
     @PostMapping(value = BASE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<Person> add(@Validated(Create.class) @RequestBody Person personDto);
+    ResponseEntity<String> add(@Validated(Create.class) @RequestBody Person personDto)
+            throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException;
 
     @GetMapping(value = BASE_URL, produces = APPLICATION_JSON_VALUE)
     ResponseEntity<Page<Person>> find(@Valid @ModelAttribute PersonFilterRequest personFilterRequest);
@@ -39,7 +43,7 @@ public interface PersonApi {
             @PathVariable @Pattern(regexp = "^[A-Z0-9]+$", message = "Tax number must contain only uppercase letters and digits") @Size(max = 32, message = "Tax number must be less than 33 characters") String taxNumber);
 
     @PutMapping(value = BASE_URL + "/{id}", produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<Person> update(@Validated(Update.class) @RequestBody Person person, @PathVariable Long id);
+    ResponseEntity<String> update(@Validated(Update.class) @RequestBody Person person, @PathVariable Long id);
 
     @DeleteMapping(value = BASE_URL + "/{id}")
     ResponseEntity<Void> delete(@PathVariable long id);
