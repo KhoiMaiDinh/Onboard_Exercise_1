@@ -38,6 +38,12 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDomain update(Long id, PersonDomain personDomain) {
+        PersonDomain existingPerson = findById(personDomain.getId());
+
+        if (!existingPerson.getTaxNumber().equals(personDomain.getTaxNumber())) {
+            throw new IllegalArgumentException("Tax number can not be change");
+        }
+
         personDomain.setId(id);
         return personPort.update(personDomain);
     }

@@ -8,7 +8,6 @@ import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import com.netcompany.onboardingexercise1.core.exception.NotFoundException;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
-import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,11 +37,6 @@ public class PersonDBAdapter implements PersonPort {
 
     @Override
     public PersonDomain update(PersonDomain personDomain) {
-        PersonDomain existingPerson = findById(personDomain.getId());
-
-        if (!existingPerson.getTaxNumber().equals(personDomain.getTaxNumber())) {
-            throw new IllegalArgumentException("Tax number can not be change");
-        }
         PersonEntity personEntityUpdated = personRepository.save(personMapper.domainToEntity(personDomain));
 
         return personMapper.entityToDomain(personRepository.save(personEntityUpdated));
@@ -79,20 +73,8 @@ public class PersonDBAdapter implements PersonPort {
     }
 
     @Override
-    public void handleTaxCalculation(String taxNumber, BigDecimal taxAmount) {
-        PersonDomain personDomain = findByTaxNumber(taxNumber);
-        personDomain.addTaxDebt(taxAmount);
-        update(personDomain);
-    }
-
-    @Override
     public void delete(Long id) {
         personRepository.softDeleteById(id);
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return personRepository.existsById(id);
     }
 
 }
