@@ -26,6 +26,16 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public PersonDomain findByTaxNumber(String taxNumber) {
+        return personPort.findByTaxNumber(taxNumber);
+    }
+
+    @Override
+    public Page<PersonDomain> find(PersonFilter personFilter) {
+        return personPort.find(personFilter);
+    }
+
+    @Override
     public PersonDomain update(Long id, PersonDomain personDomain) {
         personDomain.setId(id);
         return personPort.update(personDomain);
@@ -34,16 +44,6 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void delete(Long id) {
         personPort.delete(id);
-    }
-
-    @Override
-    public PersonDomain findByTaxNumber(String taxNumber) {
-        return personPort.findByTaxNumber(taxNumber);
-    }
-
-    @Override
-    public Page<PersonDomain> find(PersonFilter personFilter) {
-        return personPort.find(personFilter);
     }
 
 }

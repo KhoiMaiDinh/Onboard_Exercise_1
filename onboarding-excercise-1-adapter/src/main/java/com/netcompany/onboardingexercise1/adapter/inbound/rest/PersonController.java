@@ -60,6 +60,13 @@ public class PersonController implements PersonApi {
     }
 
     @Override
+    public ResponseEntity<Person> findByTaxNumber(String taxNumber) {
+        PersonDomain personDomain = personService.findByTaxNumber(taxNumber);
+        Person person = personMapper.domainToDto(personDomain);
+        return ResponseEntity.ok(person);
+    }
+
+    @Override
     public ResponseEntity<Person> update(Person person, Long id) {
         PersonDomain personDomainUpdated = personService.update(id, personMapper.dtoToDomain(person));
 

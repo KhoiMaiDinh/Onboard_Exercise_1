@@ -7,6 +7,8 @@ import com.netcompany.onboardingexercise1.rest.common.dto.Update;
 import com.netcompany.onboardingexercise1.rest.dto.Person;
 import com.netcompany.onboardingexercise1.rest.dto.PersonFilterRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +33,10 @@ public interface PersonApi {
 
     @GetMapping(value = BASE_URL + "/{id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<Person> findById(@PathVariable Long id);
+
+    @GetMapping(value = BASE_URL + "/tax/{taxNumber}", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<Person> findByTaxNumber(
+            @PathVariable @Pattern(regexp = "^[A-Z0-9]+$", message = "Tax number must contain only uppercase letters and digits") @Size(max = 32, message = "Tax number must be less than 33 characters") String taxNumber);
 
     @PutMapping(value = BASE_URL + "/{id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<Person> update(@Validated(Update.class) @RequestBody Person person, @PathVariable Long id);

@@ -52,7 +52,7 @@ public class PersonDBAdapter implements PersonPort {
 
     @Override
     public PersonDomain findByTaxNumber(String taxNumber) {
-        return personRepository.findByTaxNumber(taxNumber).map(personMapper::entityToDomain).orElseThrow(() -> new RuntimeException("Person not found"));
+        return personRepository.findByTaxNumber(taxNumber).map(personMapper::entityToDomain).orElseThrow(() -> new NotFoundException("taxNumber", taxNumber));
     }
 
     @Override
