@@ -3,6 +3,7 @@ package com.netcompany.onboardingexercise1.core.service.person;
 import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
+import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,13 @@ public class PersonServiceImpl implements PersonService {
     public PersonDomain update(Long id, PersonDomain personDomain) {
         personDomain.setId(id);
         return personPort.update(personDomain);
+    }
+
+    @Override
+    public void handleTaxCalculation(String taxNumber, BigDecimal taxAmount) {
+        PersonDomain personDomain = findByTaxNumber(taxNumber);
+        personDomain.addTaxDebt(taxAmount);
+        update(personDomain.getId(), personDomain);
     }
 
     @Override

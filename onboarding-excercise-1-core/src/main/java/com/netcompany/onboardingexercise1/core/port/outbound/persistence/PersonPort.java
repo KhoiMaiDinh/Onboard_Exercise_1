@@ -16,9 +16,6 @@ public interface PersonPort {
 
     Page<PersonDomain> find(PersonFilter personFilter);
 
-
     void delete(Long id);
-
-    boolean existsById(Long id);
 
 }

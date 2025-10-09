@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class PersonEntity {
 
     @Column(name = "TAX_NUMBER", nullable = false)
     private String taxNumber;
+
+    @Column(name = "TAX_DEBT", nullable = false)
+    private BigDecimal taxDebt;
 
     @Column(name = "CREATED_DTTM", nullable = false)
     private Instant createdAt;
