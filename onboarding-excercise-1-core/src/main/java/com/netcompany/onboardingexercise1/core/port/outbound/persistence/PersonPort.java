@@ -1,11 +1,14 @@
-package com.netcompany.onboardingexercise1.core.service.person;
+package com.netcompany.onboardingexercise1.core.port.outbound.persistence;
 
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import org.springframework.data.domain.Page;
 
-public interface PersonService {
+public interface PersonPort {
+
     PersonDomain save(PersonDomain personDomain);
+
+    PersonDomain update(PersonDomain personDomain);
 
     PersonDomain findById(Long id);
 
@@ -13,7 +16,9 @@ public interface PersonService {
 
     Page<PersonDomain> find(PersonFilter personFilter);
 
-    PersonDomain update(Long id, PersonDomain personDomain);
 
     void delete(Long id);
+
+    boolean existsById(Long id);
+
 }

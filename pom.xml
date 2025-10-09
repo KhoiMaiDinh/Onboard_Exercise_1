@@ -19,6 +19,7 @@
     <module>onboarding-excercise-1-adapter</module>
     <module>onboarding-excercise-1-app</module>
     <module>onboarding-excercise-1-db-migration</module>
+    <module>onboarding-exercise-1-rest-api</module>
   </modules>
 
   <properties>
@@ -32,7 +33,11 @@
 
   <dependencyManagement>
     <dependencies>
-
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring.boot.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
