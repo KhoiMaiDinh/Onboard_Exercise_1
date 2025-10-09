@@ -12,11 +12,22 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaAutoCreateConfig {
 
     @Value("${onboarding-exercise-1.kafka.inbound.person-topic}")
-    public String topic;
+    public String personTopic;
+
+    @Value("${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}")
+    public String taxCalculationTopic;
 
     @Bean
-    public NewTopic libraryEvents(){
-        return TopicBuilder.name(topic)
+    public NewTopic personEvent(){
+        return TopicBuilder.name(personTopic)
+                           .partitions(1)
+                           .replicas(1)
+                           .build();
+    }
+
+    @Bean
+    public NewTopic taxCalculationEvent(){
+        return TopicBuilder.name(taxCalculationTopic)
                            .partitions(1)
                            .replicas(1)
                            .build();

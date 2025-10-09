@@ -7,5 +7,6 @@
 
   <include relativeToChangelogFile="true" file="create-app-db-schema.sql"/>
   <include relativeToChangelogFile="true" file="create-person-table.sql"/>
+  <include relativeToChangelogFile="true" file="add-tax-debt-for-person.sql"/>
 
 </databaseChangeLog>
