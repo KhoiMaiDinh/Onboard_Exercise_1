@@ -2,7 +2,7 @@ package com.netcompany.onboardingexercise1.core.service.person;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
-import com.netcompany.onboardingexercise1.core.domain.enums.PersonEventType;
+import com.netcompany.onboardingexercise1.core.domain.enums.PersonEventTypeDomain;
 import com.netcompany.onboardingexercise1.core.domain.event.PersonEventDomain;
 import com.netcompany.onboardingexercise1.core.port.outbound.kafka.PersonEventPort;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +23,7 @@ public class PersonEventServiceImpl implements PersonEventService {
     public void create(PersonDomain personDomain) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
         PersonEventDomain personEventDomainCreate = new PersonEventDomain();
 
-        personEventDomainCreate.setPersonEventType(PersonEventType.CREATE);
+        personEventDomainCreate.setPersonEventTypeDomain(PersonEventTypeDomain.CREATE);
         personEventDomainCreate.setPersonDomain(personDomain);
 
         personEventPort.produce(personEventDomainCreate);
@@ -34,7 +34,7 @@ public class PersonEventServiceImpl implements PersonEventService {
         personDomain.setId(id);
         PersonEventDomain personEventDomainUpdate = new PersonEventDomain();
 
-        personEventDomainUpdate.setPersonEventType(PersonEventType.UPDATE);
+        personEventDomainUpdate.setPersonEventTypeDomain(PersonEventTypeDomain.UPDATE);
         personEventDomainUpdate.setPersonDomain(personDomain);
 
 

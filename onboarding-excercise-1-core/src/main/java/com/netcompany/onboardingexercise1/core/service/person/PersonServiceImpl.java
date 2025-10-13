@@ -1,7 +1,8 @@
 package com.netcompany.onboardingexercise1.core.service.person;
 
-import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
+import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
+import com.netcompany.onboardingexercise1.core.exception.DuplicationException;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
 import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,9 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDomain save(PersonDomain personDomain) {
+        if (personPort.existByTaxNumber(personDomain.getTaxNumber()))
+            throw new DuplicationException("Person", "Tax number", personDomain.getTaxNumber());
+
         return personPort.save(personDomain);
     }
 

@@ -2,11 +2,13 @@ package com.netcompany.onboardingexercise1.rest.common.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidationError {
+public class Validation {
+
     private String field;
+
     private String message;
 }

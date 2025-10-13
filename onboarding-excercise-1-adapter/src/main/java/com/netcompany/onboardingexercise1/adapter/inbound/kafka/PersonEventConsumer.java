@@ -2,9 +2,9 @@ package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcompany.onboardingexercise1.adapter.mapper.PersonMapper;
+import com.netcompany.onboardingexercise1.adapter.mapper.PersonEventMapper;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
-import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
+import com.netcompany.onboardingexercise1.core.service.person.PersonService;
 import com.netcompany.onboardingexercise1.event.personevent.PersonEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,16 +14,16 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class PersonEventConsumer {
-    private final PersonPort personPort;
+    private final PersonService personService;
 
     private final ObjectMapper objectMapper;
 
-    private final PersonMapper personMapper;
+    private final PersonEventMapper personEventMapper;
 
-    public PersonEventConsumer(PersonPort personPort, ObjectMapper objectMapper, PersonMapper personMapper) {
-        this.personPort = personPort;
+    public PersonEventConsumer(PersonService personService, ObjectMapper objectMapper, PersonEventMapper personEventMapper) {
+        this.personService = personService;
         this.objectMapper = objectMapper;
-        this.personMapper = personMapper;
+        this.personEventMapper = personEventMapper;
     }
 
 
@@ -33,17 +33,17 @@ public class PersonEventConsumer {
 
         PersonEvent personEvent = objectMapper.readValue(value, PersonEvent.class);
 
-        PersonDomain personDomain = personMapper.dtoToDomain(personEvent.getPerson());
+        PersonDomain personDomain = personEventMapper.toDomain(personEvent).getPersonDomain();
 
         switch (personEvent.getPersonEventType()) {
             case CREATE:
-                personPort.save(personMapper.dtoToDomain(personEvent.getPerson()));
+                personService.save(personDomain);
                 break;
             case UPDATE:
-                personPort.update(personDomain);
+                personService.update(personDomain.getId(), personDomain);
                 break;
             case DELETE:
-                personPort.delete(personDomain.getId());
+                personService.delete(personDomain.getId());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown person event type");

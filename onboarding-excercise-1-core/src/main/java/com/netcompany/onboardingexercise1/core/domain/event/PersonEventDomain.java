@@ -1,7 +1,7 @@
 package com.netcompany.onboardingexercise1.core.domain.event;
 
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
-import com.netcompany.onboardingexercise1.core.domain.enums.PersonEventType;
+import com.netcompany.onboardingexercise1.core.domain.enums.PersonEventTypeDomain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonEventDomain {
-    private PersonEventType personEventType;
+    private PersonEventTypeDomain personEventTypeDomain;
 
     private PersonDomain personDomain;
 }

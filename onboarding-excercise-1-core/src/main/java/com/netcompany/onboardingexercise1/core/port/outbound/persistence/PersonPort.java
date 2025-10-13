@@ -18,4 +18,6 @@ public interface PersonPort {
 
     void delete(Long id);
 
+    boolean existByTaxNumber(String taxNumber);
+
 }

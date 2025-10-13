@@ -23,4 +23,6 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long>, Jpa
     Optional<PersonEntity> findByIdAndDeletedAtIsNull(Long id);
 
     Optional<PersonEntity> findByTaxNumber(String taxNumber);
+
+    Boolean existsByTaxNumber(String taxNumber);
 }

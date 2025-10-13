@@ -22,21 +22,20 @@ public class PersonEventProducer implements PersonEventPort {
 
     ObjectMapper objectMapper;
 
-    public PersonEventProducer(KafkaTemplate<Integer, String> kafkaTemplate, ObjectMapper objectMapper) {
+    PersonEventMapper personEventMapper;
+
+
+    public PersonEventProducer(KafkaTemplate<Integer, String> kafkaTemplate, ObjectMapper objectMapper, PersonEventMapper personEventMapper) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
+        this.personEventMapper = personEventMapper;
     }
 
-    public void produce(PersonEventDomain personEventDomain) throws JsonProcessingException {
-
-        String value = objectMapper.writeValueAsString(personEventDomain);
-        try {
-            kafkaTemplate.send(topic, value).get(1, TimeUnit.SECONDS);
-        } catch (ExecutionException | InterruptedException e) {
-            log.error("ExecutionException/InterruptedException Sending the Message and the exception is {}", e.getMessage());
-        } catch (Exception e) {
-            log.error("Exception Sending the Message and the exception is {}", e.getMessage());
-        }
+    @Audit(action = "Person Event Producer")
+    public void produce(PersonEventDomain personEventDomain) throws JsonProcessingException, InterruptedException, TimeoutException, ExecutionException {
+        PersonEvent personEvent = personEventMapper.toDto(personEventDomain);
+        String value = objectMapper.writeValueAsString(personEvent);
+        kafkaTemplate.send(topic, value).get(1, TimeUnit.SECONDS);
     }
 
 }

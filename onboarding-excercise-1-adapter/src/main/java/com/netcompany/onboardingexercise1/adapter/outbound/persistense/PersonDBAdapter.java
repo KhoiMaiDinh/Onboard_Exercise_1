@@ -77,4 +77,9 @@ public class PersonDBAdapter implements PersonPort {
         personRepository.softDeleteById(id);
     }
 
+    @Override
+    public boolean existByTaxNumber(String taxNumber) {
+        return personRepository.existsByTaxNumber(taxNumber);
+    }
+
 }
