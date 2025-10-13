@@ -2,10 +2,14 @@ package com.netcompany.onboardingexercise1.adapter.outbound.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netcompany.onboardingexercise1.adapter.aspect.Audit;
+import com.netcompany.onboardingexercise1.adapter.mapper.PersonEventMapper;
 import com.netcompany.onboardingexercise1.core.domain.event.PersonEventDomain;
 import com.netcompany.onboardingexercise1.core.port.outbound.kafka.PersonEventPort;
+import com.netcompany.onboardingexercise1.event.personevent.PersonEvent;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -1,4 +1,4 @@
-package com.netcompany.onboardingexercise1.rest.common.dto;
+package com.netcompany.onboardingexercise1.shared.dto;
 
 import jakarta.validation.groups.Default;
 

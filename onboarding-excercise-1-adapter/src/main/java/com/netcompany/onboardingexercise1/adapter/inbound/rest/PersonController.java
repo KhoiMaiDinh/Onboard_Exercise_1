@@ -1,6 +1,7 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.netcompany.onboardingexercise1.adapter.aspect.Audit;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonFilterMapper;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonMapper;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
@@ -50,6 +51,7 @@ public class PersonController implements PersonApi {
     }
 
     @Override
+    @Audit(action = "Find People via REST")
     public ResponseEntity<Page<Person>> find(PersonFilterRequest personFilterRequest) {
         Page<PersonDomain> personDomainPage = personService.find(personFilterMapper.toPersonFilter(personFilterRequest));
 
@@ -72,13 +74,13 @@ public class PersonController implements PersonApi {
     }
 
     @Override
-    public ResponseEntity<String> update(Person person, Long id) {
-        personService.update(id, personMapper.dtoToDomain(person));
+    public ResponseEntity<String> update(Person person, Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+        personEventService.update(id, personMapper.dtoToDomain(person));
         return ResponseEntity.status(HttpStatus.OK).body("Person updated successfully");
     }
 
     @Override
-    public ResponseEntity<Void> delete(long id) {
+    public ResponseEntity<Void> delete(Long id) {
         personService.delete(id);
         return ResponseEntity.noContent().build();
     }

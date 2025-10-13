@@ -3,10 +3,10 @@ package com.netcompany.onboardingexercise1.rest.api;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.netcompany.onboardingexercise1.rest.common.dto.Create;
-import com.netcompany.onboardingexercise1.rest.common.dto.Update;
 import com.netcompany.onboardingexercise1.rest.dto.Person;
 import com.netcompany.onboardingexercise1.rest.dto.PersonFilterRequest;
+import com.netcompany.onboardingexercise1.shared.dto.Create;
+import com.netcompany.onboardingexercise1.shared.dto.Update;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -29,7 +29,7 @@ public interface PersonApi {
     String BASE_URL = "/people";
 
     @PostMapping(value = BASE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<String> add(@Validated(Create.class) @RequestBody Person personDto)
+    ResponseEntity<String> add(@Validated(Create.class) @RequestBody Person person)
             throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException;
 
     @GetMapping(value = BASE_URL, produces = APPLICATION_JSON_VALUE)
@@ -43,8 +43,9 @@ public interface PersonApi {
             @PathVariable @Pattern(regexp = "^[A-Z0-9]+$", message = "Tax number must contain only uppercase letters and digits") @Size(max = 32, message = "Tax number must be less than 33 characters") String taxNumber);
 
     @PutMapping(value = BASE_URL + "/{id}", produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<String> update(@Validated(Update.class) @RequestBody Person person, @PathVariable Long id);
+    ResponseEntity<String> update(@Validated(Update.class) @RequestBody Person person, @PathVariable Long id)
+            throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException;
 
     @DeleteMapping(value = BASE_URL + "/{id}")
-    ResponseEntity<Void> delete(@PathVariable long id);
+    ResponseEntity<Void> delete(@PathVariable Long id);
 }

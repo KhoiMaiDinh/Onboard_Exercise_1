@@ -6,11 +6,13 @@
   <parent>
     <groupId>com.netcompany</groupId>
     <artifactId>onboarding-excercise-1</artifactId>
-    <version>${revision}</version>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>onboarding-excercise-1-adapter</artifactId>
+
 
   <dependencies>
     <dependency>
@@ -28,6 +30,10 @@
     <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>
@@ -60,6 +66,11 @@
     <dependency>
       <groupId>com.netcompany</groupId>
       <artifactId>onboarding-excercise-1-event</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.netcompany</groupId>
+      <artifactId>onboarding-excercise-1-shared</artifactId>
       <version>${project.version}</version>
     </dependency>
 

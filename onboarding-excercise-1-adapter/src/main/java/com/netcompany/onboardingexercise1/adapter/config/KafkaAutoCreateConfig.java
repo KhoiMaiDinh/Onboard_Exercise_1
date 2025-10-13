@@ -17,6 +17,10 @@ public class KafkaAutoCreateConfig {
     @Value("${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}")
     public String taxCalculationTopic;
 
+    @Value("${onboarding-exercise-1.kafka.inbound.test-topic}")
+    public String testTopic;
+
+
     @Bean
     public NewTopic personEvent(){
         return TopicBuilder.name(personTopic)
@@ -33,4 +37,11 @@ public class KafkaAutoCreateConfig {
                            .build();
     }
 
+    @Bean
+    public NewTopic testEvent(){
+        return TopicBuilder.name(testTopic)
+                           .partitions(3)
+                           .replicas(1)
+                           .build();
+    }
 }

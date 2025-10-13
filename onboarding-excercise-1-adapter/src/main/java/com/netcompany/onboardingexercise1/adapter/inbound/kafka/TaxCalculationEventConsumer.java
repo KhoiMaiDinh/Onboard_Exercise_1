@@ -1,9 +1,9 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcompany.onboardingexercise1.adapter.config.AbstractKafkaConsumer;
 import com.netcompany.onboardingexercise1.core.service.person.PersonService;
 import com.netcompany.onboardingexercise1.event.taxcalculationevent.TaxCalculationEvent;
+import com.netcompany.onboardingexercise1.shared.kafka.consumer.AbstractKafkaConsumer;
 import jakarta.validation.Validator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +42,7 @@ public class TaxCalculationEventConsumer extends AbstractKafkaConsumer<TaxCalcul
 
 
     @Override
-        @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}", containerFactory = "taxCalculationKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}", containerFactory = "taxCalculationKafkaListenerContainerFactory")
     protected void consume(ConsumerRecord<String, String> consumerRecord) {
         TaxCalculationEvent taxCalculationEvent = readConsumerRecord(consumerRecord, TaxCalculationEvent.class);
         personService.handleTaxCalculation(taxCalculationEvent.getTaxNumber(), taxCalculationEvent.getCalculatedTax());
@@ -57,7 +57,7 @@ public class TaxCalculationEventConsumer extends AbstractKafkaConsumer<TaxCalcul
         personService.handleTaxCalculation(taxCalculationEvent.getTaxNumber(), taxCalculationEvent.getCalculatedTax());
     }
 
-//    @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}", containerFactory = "taxCalculationNonBlockingBatchKafkaListenerContainerFactory")
+    //    @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}", containerFactory = "taxCalculationNonBlockingBatchKafkaListenerContainerFactory")
     public void consumeNonBlockingBatch(List<ConsumerRecord<String, String>> consumerRecords, Acknowledgment ack) {
 
         for (final ConsumerRecord<String, String> consumerRecord : consumerRecords) {

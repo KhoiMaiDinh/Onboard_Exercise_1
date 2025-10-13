@@ -1,7 +1,7 @@
-package com.netcompany.onboardingexercise1.adapter.config;
+package com.netcompany.onboardingexercise1.shared.kafka.config;
 
-import com.netcompany.onboardingexercise1.adapter.inbound.kafka.KafkaDeserializationException;
-import com.netcompany.onboardingexercise1.adapter.inbound.kafka.KafkaValidationException;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaDeserializationException;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaValidationException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;
@@ -15,7 +15,7 @@ import org.springframework.util.backoff.FixedBackOff;
 @Slf4j
 public abstract class AbstractKafkaConsumerConfig {
 
-    protected final List<Class<? extends Exception>> nonRetryableExceptions =
+    protected List<Class<? extends Exception>> nonRetryableExceptions =
             List.of(IllegalArgumentException.class, NullPointerException.class, KafkaDeserializationException.class, KafkaValidationException.class);
 
     protected final KafkaTemplate<Object, Object> kafkaTemplate;
@@ -24,8 +24,8 @@ public abstract class AbstractKafkaConsumerConfig {
 
     protected final String topic;
 
-    protected AbstractKafkaConsumerConfig(String baseTopic, KafkaTemplate<Object, Object> kafkaTemplate, KafkaProperties kafkaProperties) {
-        this.topic = baseTopic;
+    protected AbstractKafkaConsumerConfig(String topic, KafkaTemplate<Object, Object> kafkaTemplate, KafkaProperties kafkaProperties) {
+        this.topic = topic;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaProperties = kafkaProperties;
     }
@@ -39,7 +39,11 @@ public abstract class AbstractKafkaConsumerConfig {
     }
 
     protected boolean isNonRetryable(Throwable ex) {
-        return nonRetryableExceptions.stream().anyMatch(exception -> exception.isAssignableFrom(ex.getClass()));
+        return getNonRetryableExceptions().stream().anyMatch(exception -> exception.isAssignableFrom(ex.getClass()));
+    }
+
+    protected List<Class<? extends Exception>> getNonRetryableExceptions() {
+        return nonRetryableExceptions;
     }
 
     protected Throwable unwrap(Throwable ex) {

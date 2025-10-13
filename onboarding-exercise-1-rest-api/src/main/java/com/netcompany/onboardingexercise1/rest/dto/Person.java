@@ -1,8 +1,8 @@
 package com.netcompany.onboardingexercise1.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.netcompany.onboardingexercise1.rest.common.dto.Create;
-import com.netcompany.onboardingexercise1.rest.common.dto.Update;
+import com.netcompany.onboardingexercise1.shared.dto.Create;
+import com.netcompany.onboardingexercise1.shared.dto.Update;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;

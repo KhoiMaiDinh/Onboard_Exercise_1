@@ -6,8 +6,8 @@ import com.netcompany.onboardingexercise1.adapter.outbound.persistense.repositor
 import com.netcompany.onboardingexercise1.adapter.outbound.persistense.repository.specification.PersonSpecifications;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
-import com.netcompany.onboardingexercise1.core.exception.NotFoundException;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
+import com.netcompany.onboardingexercise1.shared.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

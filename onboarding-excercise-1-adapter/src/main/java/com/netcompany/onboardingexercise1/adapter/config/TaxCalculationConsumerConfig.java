@@ -1,5 +1,6 @@
 package com.netcompany.onboardingexercise1.adapter.config;
 
+import com.netcompany.onboardingexercise1.shared.kafka.config.AbstractKafkaConsumerConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,5 +48,4 @@ public class TaxCalculationConsumerConfig extends AbstractKafkaConsumerConfig {
         factory.setCommonErrorHandler(retryErrorHandler());
         return factory;
     }
-
 }

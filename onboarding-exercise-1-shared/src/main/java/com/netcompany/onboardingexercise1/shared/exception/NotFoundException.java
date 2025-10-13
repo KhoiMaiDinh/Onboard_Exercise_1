@@ -1,4 +1,4 @@
-package com.netcompany.onboardingexercise1.core.exception;
+package com.netcompany.onboardingexercise1.shared.exception;
 
 public class NotFoundException extends RuntimeException {
 

@@ -27,7 +27,7 @@ public class PersonEventConsumer {
     }
 
 
-    @KafkaListener(topics = "#{@environment.getProperty('onboarding-exercise-1.kafka.inbound.person-topic')}")
+    @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.person-topic}", containerFactory = "personKafkaListenerContainerFactory")
     public void onMessage(ConsumerRecord<Integer, String> consumerRecord) throws JsonProcessingException {
         String value = consumerRecord.value();
 

@@ -1,6 +1,6 @@
-package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
+package com.netcompany.onboardingexercise1.shared.exception;
 
-import com.netcompany.onboardingexercise1.rest.common.dto.EventErrorResponse;
+import com.netcompany.onboardingexercise1.shared.dto.EventErrorResponse;
 import lombok.Getter;
 
 @Getter

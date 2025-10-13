@@ -1,11 +1,11 @@
-package com.netcompany.onboardingexercise1.adapter.config;
+package com.netcompany.onboardingexercise1.shared.kafka.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcompany.onboardingexercise1.adapter.inbound.kafka.KafkaDeserializationException;
-import com.netcompany.onboardingexercise1.adapter.inbound.kafka.KafkaValidationException;
-import com.netcompany.onboardingexercise1.rest.common.dto.EventErrorResponse;
-import com.netcompany.onboardingexercise1.rest.common.dto.Validation;
+import com.netcompany.onboardingexercise1.shared.dto.EventErrorResponse;
+import com.netcompany.onboardingexercise1.shared.dto.Validation;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaDeserializationException;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import java.time.Instant;

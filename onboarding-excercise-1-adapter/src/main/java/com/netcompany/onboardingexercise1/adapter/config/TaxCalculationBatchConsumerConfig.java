@@ -1,5 +1,6 @@
 package com.netcompany.onboardingexercise1.adapter.config;
 
+import com.netcompany.onboardingexercise1.shared.kafka.config.AbstractKafkaConsumerConfig;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
