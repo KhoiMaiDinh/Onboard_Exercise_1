@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: onboarding-cron-config
+data:
+
+  SPRING_APPLICATION_NAME: "onboarding-exercise-1-cron"
+  APP_DEBUG_STACKTRACE: "false"
+  SERVER_PORT: "8081"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health"
+  ONBOARDING_EXERCISE_1_CRON_REST_URL_ONBOARDING_EXERCISE_1: "http://clusterip-onboarding-app.default.svc.cluster.local:8080"
