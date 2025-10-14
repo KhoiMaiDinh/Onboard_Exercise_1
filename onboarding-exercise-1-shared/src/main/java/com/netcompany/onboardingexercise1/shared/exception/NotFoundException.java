@@ -1,9 +1,13 @@
 package com.netcompany.onboardingexercise1.shared.exception;
 
-public class NotFoundException extends RuntimeException {
+import com.netcompany.onboardingexercise1.shared.enums.ErrorCode;
+import org.springframework.http.HttpStatus;
 
-    public NotFoundException(String resourceName, Object identifier) {
-        super(String.format("%s with identifier '%s' not found", resourceName, identifier));
+public class NotFoundException extends BaseException {
+
+    public NotFoundException(ErrorCode errorCode, String resourceName, Object identifier) {
+
+        super(errorCode, String.format("%s with identifier '%s' not found", resourceName, identifier), HttpStatus.NOT_FOUND);
     }
 
 }

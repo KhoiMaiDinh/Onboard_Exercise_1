@@ -7,6 +7,7 @@ import com.netcompany.onboardingexercise1.adapter.outbound.persistense.repositor
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
+import com.netcompany.onboardingexercise1.shared.enums.ErrorCode;
 import com.netcompany.onboardingexercise1.shared.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,12 +45,16 @@ public class PersonDBAdapter implements PersonPort {
 
     @Override
     public PersonDomain findById(Long id) {
-        return personRepository.findByIdAndDeletedAtIsNull(id).map(personMapper::entityToDomain).orElseThrow(() -> new NotFoundException("id", id));
+        return personRepository.findByIdAndDeletedAtIsNull(id)
+                               .map(personMapper::entityToDomain)
+                               .orElseThrow(() -> new NotFoundException(ErrorCode.ONBOARDING_NOTFOUND_001, "id", id));
     }
 
     @Override
     public PersonDomain findByTaxNumber(String taxNumber) {
-        return personRepository.findByTaxNumber(taxNumber).map(personMapper::entityToDomain).orElseThrow(() -> new NotFoundException("taxNumber", taxNumber));
+        return personRepository.findByIdAndDeletedAtIsNull(taxNumber)
+                               .map(personMapper::entityToDomain)
+                               .orElseThrow(() -> new NotFoundException(ErrorCode.ONBOARDING_NOTFOUND_002, "taxNumber", taxNumber));
     }
 
     @Override

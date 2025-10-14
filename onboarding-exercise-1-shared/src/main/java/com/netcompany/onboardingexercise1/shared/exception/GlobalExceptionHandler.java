@@ -2,6 +2,7 @@ package com.netcompany.onboardingexercise1.shared.exception;
 
 import com.netcompany.onboardingexercise1.shared.dto.RestErrorResponse;
 import com.netcompany.onboardingexercise1.shared.dto.Validation;
+import com.netcompany.onboardingexercise1.shared.enums.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
         RestErrorResponse resp = RestErrorResponse.builder()
                                                   .timestamp(Instant.now())
                                                   .status(HttpStatus.NOT_FOUND.value())
-                                                  .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                                                  .error(ErrorCode.COMMON_NOTFOUND_001.getCode())
                                                   .message("API path not found: " + req.getRequestURI())
                                                   .path(req.getRequestURI())
                                                   .stackTrace(getStackTrace(ex))
@@ -48,18 +49,23 @@ public class GlobalExceptionHandler {
         String paramName = ex.getName();
         Object value = ex.getValue();
         String paramValue = (value != null) ? value.toString() : "null";
+        Class<?> expectedType = ex.getRequiredType();
+
+        String expectedTypeName = (expectedType != null) ? expectedType.getSimpleName() : "unknown type";
 
         RestErrorResponse resp = RestErrorResponse.builder()
                                                   .timestamp(Instant.now())
                                                   .status(HttpStatus.BAD_REQUEST.value())
-                                                  .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                                                  .message(String.format("Parameter '%s' has invalid value '%s'. Expected a valid integer.", paramName, paramValue))
+                                                  .error(ErrorCode.COMMON_VALIDATION_001.getCode())
+                                                  .message(String.format("Parameter '%s' has invalid value '%s'. Expected a valid %s.", paramName, paramValue,
+                                                          expectedTypeName))
                                                   .path(req.getRequestURI())
                                                   .stackTrace(getStackTrace(ex))
                                                   .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
     }
+
 
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -74,7 +80,7 @@ public class GlobalExceptionHandler {
         RestErrorResponse error = RestErrorResponse.builder()
                                                    .timestamp(Instant.now())
                                                    .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
-                                                   .error(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                                                   .error(ErrorCode.COMMON_VALIDATION_002.getCode())
                                                    .message("Validation failed")
                                                    .path(request.getRequestURI())
                                                    .violations(violations)
@@ -96,7 +102,7 @@ public class GlobalExceptionHandler {
         RestErrorResponse error = RestErrorResponse.builder()
                                                    .timestamp(Instant.now())
                                                    .status(HttpStatus.BAD_REQUEST.value())
-                                                   .error(HttpStatus.BAD_REQUEST.toString())
+                                                   .error(ErrorCode.COMMON_VALIDATION_003.getCode())
                                                    .message("Invalid Params")
                                                    .path(request.getRequestURI())
                                                    .violations(violations)
@@ -112,7 +118,7 @@ public class GlobalExceptionHandler {
         RestErrorResponse error = RestErrorResponse.builder()
                                                    .timestamp(Instant.now())
                                                    .status(HttpStatus.BAD_REQUEST.value())
-                                                   .error(HttpStatus.BAD_REQUEST.toString())
+                                                   .error(ErrorCode.COMMON_VALIDATION_004.getCode())
                                                    .message(ex.getMessage())
                                                    .path(request.getRequestURI())
                                                    .violations(null)
@@ -122,17 +128,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<RestErrorResponse> handleNotFound(NotFoundException ex, HttpServletRequest request) {
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<RestErrorResponse> handleCustom(BaseException ex, HttpServletRequest request) {
+
+        int status = ex.getHttpStatus().value();
+
         RestErrorResponse error = RestErrorResponse.builder()
                                                    .timestamp(Instant.now())
-                                                   .status(HttpStatus.NOT_FOUND.value())
-                                                   .error(HttpStatus.NOT_FOUND.toString())
+                                                   .status(status)
+                                                   .error(ex.getErrorCode().getCode())
                                                    .message(ex.getMessage())
                                                    .path(request.getRequestURI())
                                                    .stackTrace(getStackTrace(ex))
                                                    .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(Exception.class)
@@ -141,7 +151,7 @@ public class GlobalExceptionHandler {
         RestErrorResponse error = RestErrorResponse.builder()
                                                    .timestamp(Instant.now())
                                                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                                                   .error(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                                                   .error(ErrorCode.COMMON_INTERNAL_SERVER_ERROR_001.getCode())
                                                    .message("Unexpected error occurred")
                                                    .path(request.getRequestURI())
                                                    .stackTrace(getStackTrace(ex))
