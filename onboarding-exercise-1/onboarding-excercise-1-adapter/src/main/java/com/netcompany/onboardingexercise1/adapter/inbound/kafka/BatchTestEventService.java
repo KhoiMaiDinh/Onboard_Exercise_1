@@ -1,8 +1,7 @@
-package com.netcompany.onboardingexercise1.adapter.inbound.rest;
+package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcompany.onboardingexercise1.event.testevent.TestEvent;
-import com.netcompany.onboardingexercise1.shared.exception.UnexpectedException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,33 +49,29 @@ public class BatchTestEventService {
     public List<TestEvent> pullBatch(int maxMessages) {
         List<TestEvent> testEvents = new ArrayList<>();
 
-        try (KafkaConsumer<Integer, String> consumer = createConsumer()) {
-            List<TopicPartition> partitions = getTopicPartitions(consumer);
-            consumer.assign(partitions);
+        KafkaConsumer<Integer, String> consumer = createConsumer();
+        List<TopicPartition> partitions = getTopicPartitions(consumer);
+        consumer.assign(partitions);
 
-            ConsumerRecords<Integer, String> consumerRecords = consumer.poll(POLL_TIMEOUT);
-            log.info("Polled {} consumerRecords from topic {}", consumerRecords.count(), topic);
+        ConsumerRecords<Integer, String> consumerRecords = consumer.poll(POLL_TIMEOUT);
+        log.info("Polled {} consumerRecords from topic {}", consumerRecords.count(), topic);
 
-            Map<TopicPartition, Long> lastOffsets = new HashMap<>();
-            int count = 0;
+        Map<TopicPartition, Long> lastOffsets = new HashMap<>();
+        int count = 0;
 
-            for (ConsumerRecord<Integer, String> consumerRecord : consumerRecords) {
-                if (count >= maxMessages)
-                    break;
+        for (ConsumerRecord<Integer, String> consumerRecord : consumerRecords) {
+            if (count >= maxMessages)
+                break;
 
-                TestEvent event = parseRecord(consumerRecord);
-                if (event != null) {
-                    testEvents.add(event);
-                    lastOffsets.put(new TopicPartition(consumerRecord.topic(), consumerRecord.partition()), consumerRecord.offset() + 1);
-                    count++;
-                }
+            TestEvent event = parseRecord(consumerRecord);
+            if (event != null) {
+                testEvents.add(event);
+                lastOffsets.put(new TopicPartition(consumerRecord.topic(), consumerRecord.partition()), consumerRecord.offset() + 1);
+                count++;
             }
-
-            commitOffsets(consumer, lastOffsets);
-        } catch (Exception e) {
-            log.error("Error while consuming Kafka messages: ", e);
-            throw new UnexpectedException("Error while consuming Kafka messages", e);
         }
+
+        commitOffsets(consumer, lastOffsets);
 
         return testEvents;
     }
@@ -84,19 +79,16 @@ public class BatchTestEventService {
     public int estimateRemaining() {
         int remainingMessages = 0;
 
-        try (KafkaConsumer<Integer, String> consumer = createConsumer()) {
-            List<TopicPartition> partitions = getTopicPartitions(consumer);
-            consumer.assign(partitions);
+        KafkaConsumer<Integer, String> consumer = createConsumer();
+        List<TopicPartition> partitions = getTopicPartitions(consumer);
+        consumer.assign(partitions);
 
-            Map<TopicPartition, Long> endOffsets = consumer.endOffsets(partitions);
+        Map<TopicPartition, Long> endOffsets = consumer.endOffsets(partitions);
 
-            for (TopicPartition partition : partitions) {
-                long position = consumer.position(partition);
-                long end = endOffsets.getOrDefault(partition, 0L);
-                remainingMessages += (int) Math.max(end - position, 0);
-            }
-        } catch (Exception e) {
-            log.error("Error estimating remaining Kafka messages: ", e);
+        for (TopicPartition partition : partitions) {
+            long position = consumer.position(partition);
+            long end = endOffsets.getOrDefault(partition, 0L);
+            remainingMessages += (int) Math.max(end - position, 0);
         }
 
         return remainingMessages;
