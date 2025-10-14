@@ -40,4 +40,15 @@ public class PersonEventServiceImpl implements PersonEventService {
 
         personEventPort.produce(personEventDomainUpdate);
     }
+
+    @Override
+    public void delete(Long id) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+        PersonDomain personDomainDelete = new PersonDomain();
+        personDomainDelete.setId(id);
+
+        PersonEventDomain personEventDomainDelete = new PersonEventDomain();
+        personEventDomainDelete.setPersonEventTypeDomain(PersonEventTypeDomain.DELETE);
+        personEventDomainDelete.setPersonDomain(personDomainDelete);
+        personEventPort.produce(personEventDomainDelete);
+    }
 }

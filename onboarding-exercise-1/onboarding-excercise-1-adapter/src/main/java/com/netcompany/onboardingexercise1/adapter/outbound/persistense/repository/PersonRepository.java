@@ -22,7 +22,8 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long>, Jpa
     @Query("SELECT p FROM PersonEntity p WHERE p.id = :id AND p.deletedAt IS NULL")
     Optional<PersonEntity> findByIdAndDeletedAtIsNull(Long id);
 
-    Optional<PersonEntity> findByTaxNumber(String taxNumber);
+    @Query("SELECT p FROM PersonEntity p WHERE p.taxNumber = :taxNumber AND p.deletedAt IS NULL")
+    Optional<PersonEntity> findByIdAndDeletedAtIsNull(String taxNumber);
 
     Boolean existsByTaxNumber(String taxNumber);
 }

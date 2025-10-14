@@ -8,4 +8,5 @@ import java.util.concurrent.TimeoutException;
 public interface PersonEventService {
     void create(PersonDomain person) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException;
     void update(Long id, PersonDomain person) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException;
+    void delete(Long id) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException;
 }

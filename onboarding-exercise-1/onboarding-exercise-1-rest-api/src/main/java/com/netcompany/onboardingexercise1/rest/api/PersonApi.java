@@ -47,5 +47,5 @@ public interface PersonApi {
             throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException;
 
     @DeleteMapping(value = BASE_URL + "/{id}")
-    ResponseEntity<Void> delete(@PathVariable Long id);
+    ResponseEntity<Void> delete(@PathVariable Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException;
 }
