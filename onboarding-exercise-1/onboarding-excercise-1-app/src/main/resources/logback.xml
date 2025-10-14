@@ -13,7 +13,7 @@
     </encoder>
   </appender>
 
-  <logger name="com.netcompany.onboardingexercise1.shared.annotation.aspect.AuditAspect" level="INFO" additivity="false">
+  <logger name="com.netcompany.onboardingexercise1.shared.annotation.audit.AuditAspect" level="INFO" additivity="false">
     <appender-ref ref="AUDIT-FILE"/>
   </logger>
 
