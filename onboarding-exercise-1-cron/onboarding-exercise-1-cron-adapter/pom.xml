@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>onboarding-exercise-1-cron-adapter</artifactId>
-
+  <version>0.0.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
@@ -20,6 +20,10 @@
       <groupId>com.netcompany</groupId>
       <artifactId>onboarding-excercise-1-shared</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
     </dependency>
   </dependencies>
 
@@ -36,6 +40,7 @@
               <artifactId>lombok</artifactId>
               <version>1.18.42</version>
             </path>
+
           </annotationProcessorPaths>
         </configuration>
       </plugin>
