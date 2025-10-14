@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -40,6 +41,24 @@ public class GlobalExceptionHandler {
                                                   .stackTrace(getStackTrace(ex))
                                                   .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<RestErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest req) {
+        String paramName = ex.getName();
+        Object value = ex.getValue();
+        String paramValue = (value != null) ? value.toString() : "null";
+
+        RestErrorResponse resp = RestErrorResponse.builder()
+                                                  .timestamp(Instant.now())
+                                                  .status(HttpStatus.BAD_REQUEST.value())
+                                                  .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                                                  .message(String.format("Parameter '%s' has invalid value '%s'. Expected a valid integer.", paramName, paramValue))
+                                                  .path(req.getRequestURI())
+                                                  .stackTrace(getStackTrace(ex))
+                                                  .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
     }
 
 

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,17 +10,13 @@
   </parent>
 
   <groupId>com.netcompany</groupId>
-  <artifactId>onboarding-excercise-1</artifactId>
+  <artifactId>all-apps</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>onboarding-excercise-1-core</module>
-    <module>onboarding-excercise-1-adapter</module>
-    <module>onboarding-excercise-1-app</module>
-    <module>onboarding-excercise-1-db-migration</module>
-    <module>onboarding-exercise-1-rest-api</module>
-    <module>onboarding-excercise-1-event</module>
+    <module>onboarding-exercise-1</module>
     <module>onboarding-exercise-1-shared</module>
+    <module>onboarding-exercise-1-cron</module>
   </modules>
 
   <properties>
@@ -30,7 +25,6 @@
     <spring.boot.version>3.5.6</spring.boot.version>
     <spring-cloud.version>2025.0.0</spring-cloud.version>
     <spring-kafka.version>3.3.10</spring-kafka.version>
-    <jib-image.name>onboarding-exercise-1</jib-image.name>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
@@ -47,8 +41,11 @@
         <artifactId>spring-kafka</artifactId>
         <version>${spring-kafka.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.netcompany</groupId>
+        <artifactId>onboarding-excercise-1-shared</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-
-
 </project>
