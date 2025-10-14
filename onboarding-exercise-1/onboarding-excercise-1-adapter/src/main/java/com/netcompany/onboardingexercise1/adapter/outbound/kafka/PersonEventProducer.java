@@ -2,7 +2,7 @@ package com.netcompany.onboardingexercise1.adapter.outbound.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcompany.onboardingexercise1.shared.annotation.aspect.Audit;
+import com.netcompany.onboardingexercise1.shared.annotation.audit.Audit;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonEventMapper;
 import com.netcompany.onboardingexercise1.core.domain.event.PersonEventDomain;
 import com.netcompany.onboardingexercise1.core.port.outbound.kafka.PersonEventPort;

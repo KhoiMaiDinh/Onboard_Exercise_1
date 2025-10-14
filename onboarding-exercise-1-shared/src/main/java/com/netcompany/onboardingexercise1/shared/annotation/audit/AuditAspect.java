@@ -1,5 +1,6 @@
-package com.netcompany.onboardingexercise1.shared.annotation.aspect;
+package com.netcompany.onboardingexercise1.shared.annotation.audit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -12,16 +13,25 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 @Aspect
 @Component
 @Slf4j
 public class AuditAspect {
 
-    @Pointcut("@annotation(com.netcompany.onboardingexercise1.shared.annotation.aspect.Audit)")
+    private final ObjectMapper objectMapper;
+
+    public AuditAspect(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @Pointcut("@annotation(com.netcompany.onboardingexercise1.shared.annotation.audit.Audit)")
     public void auditPointcut() {}
 
     @Before("auditPointcut()")
@@ -35,7 +45,6 @@ public class AuditAspect {
         log.info("Method: {}.{}", method.getDeclaringClass().getSimpleName(), method.getName());
         log.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
 
-        // Detect context
         if (isHttpRequestContextAvailable()) {
             logHttpRequest();
         } else if (isKafkaContext(joinPoint)) {
@@ -49,7 +58,18 @@ public class AuditAspect {
 
     @AfterReturning(pointcut = "auditPointcut()", returning = "result")
     public void logReturn(JoinPoint joinPoint, Object result) {
-        log.info("AUDIT RESULT: {}", result);
+        Object payload = (result instanceof ResponseEntity<?> response) ? response.getBody() : result;
+
+        Object content = (payload instanceof Page<?> page)
+                ? page.getContent()
+                : payload;
+
+        try {
+            log.info("AUDIT RESULT: {}", objectMapper.writeValueAsString(content));
+        } catch (Exception e) {
+            log.warn("Failed to serialize audit result", e);
+            log.info("AUDIT RESULT (raw): {}", content);
+        }
     }
 
     private boolean isHttpRequestContextAvailable() {
@@ -71,17 +91,22 @@ public class AuditAspect {
         return Arrays.stream(joinPoint.getArgs()).anyMatch(arg ->
                 arg instanceof org.apache.kafka.common.header.Headers ||
                         arg instanceof org.springframework.messaging.Message<?> ||
-                        (arg instanceof String string && string.contains("kafka"))
+                        arg instanceof org.apache.kafka.clients.consumer.ConsumerRecord
         );
     }
 
     private void logKafkaContext(JoinPoint joinPoint) {
         for (Object arg : joinPoint.getArgs()) {
-            if (arg instanceof String message) {
-                log.info("Kafka Payload: {}", message);
-            } else if (arg instanceof org.springframework.messaging.Message<?> kafkaMessage) {
-                log.info("Kafka Message Headers: {}", kafkaMessage.getHeaders());
-                log.info("Kafka Message Payload: {}", kafkaMessage.getPayload());
+            if (arg instanceof ConsumerRecord<?, ?> consumerRecord) {
+                String topic = consumerRecord.topic();
+                int partition = consumerRecord.partition();
+                long offset = consumerRecord.offset();
+                Object payload = consumerRecord.value();
+                log.info("Kafka -> topic={}, partition={}, offset={}, payload={}",
+                        topic, partition, offset, payload);
+            } else if (arg instanceof org.springframework.messaging.Message<?> message) {
+                log.info("Kafka Message Headers: {}", message.getHeaders());
+                log.info("Kafka Message Payload: {}", message.getPayload());
             }
         }
     }

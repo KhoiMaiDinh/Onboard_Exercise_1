@@ -6,6 +6,7 @@ import com.netcompany.onboardingexercise1.adapter.mapper.PersonEventMapper;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
 import com.netcompany.onboardingexercise1.core.service.person.PersonService;
 import com.netcompany.onboardingexercise1.event.personevent.PersonEvent;
+import com.netcompany.onboardingexercise1.shared.annotation.audit.Audit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,6 +29,7 @@ public class PersonEventConsumer {
 
 
     @KafkaListener(topics = "${onboarding-exercise-1.kafka.inbound.person-topic}", containerFactory = "personKafkaListenerContainerFactory")
+    @Audit(action="Handle Person Events")
     public void onMessage(ConsumerRecord<Integer, String> consumerRecord) throws JsonProcessingException {
         String value = consumerRecord.value();
 

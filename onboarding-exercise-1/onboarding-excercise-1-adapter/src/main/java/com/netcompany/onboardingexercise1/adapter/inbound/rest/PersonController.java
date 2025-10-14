@@ -1,7 +1,7 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.netcompany.onboardingexercise1.shared.annotation.aspect.Audit;
+import com.netcompany.onboardingexercise1.shared.annotation.audit.Audit;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonFilterMapper;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonMapper;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
@@ -85,8 +85,8 @@ public class PersonController implements PersonApi {
 
     @Override
     @Audit(action = "Delete Person via REST")
-    public ResponseEntity<Void> delete(Long id) {
-        personService.delete(id);
+    public ResponseEntity<Void> delete(Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+        personEventService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,4 +1,4 @@
-package com.netcompany.onboardingexercise1.shared.annotation.aspect;
+package com.netcompany.onboardingexercise1.shared.annotation.audit;
 
 import java.lang.annotation.*;
 
