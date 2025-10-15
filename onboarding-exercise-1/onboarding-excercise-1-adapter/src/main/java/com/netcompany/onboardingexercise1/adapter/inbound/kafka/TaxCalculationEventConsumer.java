@@ -1,10 +1,9 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcompany.onboardingexercise1.core.service.person.PersonService;
 import com.netcompany.onboardingexercise1.event.taxcalculationevent.TaxCalculationEvent;
 import com.netcompany.onboardingexercise1.shared.kafka.consumer.AbstractKafkaConsumer;
-import jakarta.validation.Validator;
+import com.netcompany.onboardingexercise1.shared.utils.KafkaRecordReader;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -31,9 +30,9 @@ public class TaxCalculationEventConsumer extends AbstractKafkaConsumer<TaxCalcul
     @Value("${onboarding-exercise-1.kafka.inbound.tax-calculation-topic}")
     private String taxCalculationTopic;
 
-    public TaxCalculationEventConsumer(PersonService personService, ObjectMapper objectMapper, Validator validator, KafkaTemplate<String, String> kafkaTemplate,
-            ExecutorService executorService) {
-        super(objectMapper, validator);
+    public TaxCalculationEventConsumer(PersonService personService, KafkaTemplate<String, String> kafkaTemplate, ExecutorService executorService,
+            KafkaRecordReader kafkaRecordReader) {
+        super(kafkaRecordReader);
 
         this.personService = personService;
         this.kafkaTemplate = kafkaTemplate;
