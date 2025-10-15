@@ -1,7 +1,11 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcompany.onboardingexercise1.event.testevent.TestEvent;
+import com.netcompany.onboardingexercise1.shared.enums.ErrorCode;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaDeserializationException;
+import com.netcompany.onboardingexercise1.shared.exception.KafkaValidationException;
+import com.netcompany.onboardingexercise1.shared.exception.UnexpectedException;
+import com.netcompany.onboardingexercise1.shared.utils.KafkaRecordReader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,18 +36,19 @@ public class BatchTestEventService {
 
     private final String bootstrapServers;
 
-    private final ObjectMapper objectMapper;
 
     private final String consumerGroupId;
+
+    private final KafkaRecordReader kafkaRecordReader;
 
 
     public BatchTestEventService(@Value("${onboarding-exercise-1.kafka.inbound.test-topic}") String topic,
             @Value("${spring.kafka.consumer.bootstrap-servers}") String bootstrapServers,
-            @Value("${onboarding-exercise-1.kafka.manual-consumer-group-id}") String consumerGroupId, ObjectMapper objectMapper) {
+            @Value("${onboarding-exercise-1.kafka.manual-consumer-group-id}") String consumerGroupId, KafkaRecordReader kafkaRecordReader) {
         this.topic = topic;
         this.bootstrapServers = bootstrapServers;
         this.consumerGroupId = consumerGroupId;
-        this.objectMapper = objectMapper;
+        this.kafkaRecordReader = kafkaRecordReader;
     }
 
     public List<TestEvent> pullBatch(int maxMessages) {
@@ -111,11 +116,11 @@ public class BatchTestEventService {
 
     private TestEvent parseRecord(ConsumerRecord<Integer, String> consumerRecord) {
         try {
-            return objectMapper.readValue(consumerRecord.value(), TestEvent.class);
-        } catch (Exception e) {
-            log.error("Failed to parse consumerRecord: {}", consumerRecord.value(), e);
-            return null;
+            return kafkaRecordReader.readConsumerRecord(consumerRecord, TestEvent.class);
+        } catch (KafkaDeserializationException | KafkaValidationException exception) {
+            throw new UnexpectedException(ErrorCode.ONBOARDING_UNEXPECTED_001, "Unable to read consumerRecord", exception);
         }
+
     }
 
     private void commitOffsets(KafkaConsumer<Integer, String> consumer, Map<TopicPartition, Long> offsets) {

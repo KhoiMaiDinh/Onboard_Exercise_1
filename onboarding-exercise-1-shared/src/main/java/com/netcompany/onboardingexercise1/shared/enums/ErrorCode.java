@@ -34,7 +34,7 @@ public enum ErrorCode {
     ONBOARDING_NOTFOUND_002("ONBOARDING_NOTFOUND_002", "PERSON not found by taxNumber"),
 
 
-    ONBOARDING_UNEXPECTED_001("ONBOARDING_UNEXPECTED_001", "Create manual kafka consumer"),
+    ONBOARDING_UNEXPECTED_001("ONBOARDING_UNEXPECTED_001", "Read consumerRecord"),
 
     ONBOARDING_IMMUTABLE_001("ONBOARDING_IMMUTABLE_001", "Immutable field taxNumber of PERSON");
 

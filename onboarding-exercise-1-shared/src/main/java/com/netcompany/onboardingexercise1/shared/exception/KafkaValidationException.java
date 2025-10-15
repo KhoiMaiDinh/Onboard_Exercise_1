@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class KafkaValidationException extends RuntimeException {
-    private final transient com.netcompany.onboardingexercise1.shared.dto.EventErrorResponse error;
+    private final transient EventErrorResponse eventErrorResponse;
 
-    public KafkaValidationException(EventErrorResponse error) {
-        super(error.getMessage());
-        this.error = error;
+    public KafkaValidationException(EventErrorResponse eventErrorResponse) {
+        super(eventErrorResponse.getMessage());
+        this.eventErrorResponse = eventErrorResponse;
     }
 }

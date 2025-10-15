@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class ImmutableFieldException extends BaseException {
 
-        public ImmutableFieldException(ErrorCode errorCode,String fieldName) {
+    public ImmutableFieldException(ErrorCode errorCode, String fieldName) {
         super(errorCode, String.format("Field '%s' cannot be changed.", fieldName), HttpStatus.CONFLICT);
     }
 
