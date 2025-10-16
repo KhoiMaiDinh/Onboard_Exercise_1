@@ -1,6 +1,8 @@
 package com.netcompany.onboardingexercise1.event.personevent;
 
 import jakarta.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import lombok.Data;
 
@@ -19,4 +21,10 @@ public class Person {
 
     @NotEmpty
     private String taxNumber;
+
+    private BigDecimal taxDebt;
+
+    private Instant createdAt;
+
+
 }

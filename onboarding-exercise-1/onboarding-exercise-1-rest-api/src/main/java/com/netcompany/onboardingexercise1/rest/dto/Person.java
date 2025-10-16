@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import java.time.Instant;
 import java.time.LocalDate;
 import lombok.Data;
 
@@ -41,4 +42,7 @@ public class Person {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long taxDebt;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant createdAt;
 }

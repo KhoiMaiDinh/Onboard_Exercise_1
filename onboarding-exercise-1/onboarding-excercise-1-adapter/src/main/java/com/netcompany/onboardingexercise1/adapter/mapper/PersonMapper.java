@@ -18,6 +18,7 @@ public interface PersonMapper {
 
     PersonDomain entityToDomain(PersonEntity personEntity);
 
+    @Mapping(target = "deletedAt", ignore = true)
     PersonEntity domainToEntity(PersonDomain personDomain);
 
     default Integer calculateAge(LocalDate dob) {
