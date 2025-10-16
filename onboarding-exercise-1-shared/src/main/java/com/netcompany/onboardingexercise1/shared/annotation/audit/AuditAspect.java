@@ -31,7 +31,7 @@ public class AuditAspect {
         this.objectMapper = objectMapper;
     }
 
-    @Pointcut("@annotation(com.netcompany.onboardingexercise1.shared.annotation.audit.Audit)")
+    @Pointcut("@annotation(Audit)")
     public void auditPointcut() {}
 
     @Before("auditPointcut()")
