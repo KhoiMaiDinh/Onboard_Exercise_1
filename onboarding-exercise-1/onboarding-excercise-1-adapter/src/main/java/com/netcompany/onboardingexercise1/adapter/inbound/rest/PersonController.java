@@ -1,7 +1,6 @@
 package com.netcompany.onboardingexercise1.adapter.inbound.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.netcompany.onboardingexercise1.shared.annotation.audit.Audit;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonFilterMapper;
 import com.netcompany.onboardingexercise1.adapter.mapper.PersonMapper;
 import com.netcompany.onboardingexercise1.core.domain.PersonDomain;
@@ -10,20 +9,18 @@ import com.netcompany.onboardingexercise1.core.service.person.PersonService;
 import com.netcompany.onboardingexercise1.rest.api.PersonApi;
 import com.netcompany.onboardingexercise1.rest.dto.Person;
 import com.netcompany.onboardingexercise1.rest.dto.PersonFilterRequest;
+import com.netcompany.onboardingexercise1.shared.annotation.audit.Audit;
+import com.netcompany.onboardingexercise1.shared.dto.MessageResponse;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1")
-@Validated
-@Slf4j
 public class PersonController implements PersonApi {
 
     private final PersonService personService;
@@ -45,10 +42,12 @@ public class PersonController implements PersonApi {
 
     @Override
     @Audit(action = "Add People via REST")
-    public ResponseEntity<String> add(Person person) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<MessageResponse> add(Person person) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
         personEventService.create(personMapper.dtoToDomain(person));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Person created successfully");
+        MessageResponse messageResponse = new MessageResponse("Person create requested successfully");
+
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
     }
 
     @Override
@@ -78,15 +77,20 @@ public class PersonController implements PersonApi {
 
     @Override
     @Audit(action = "Update Person via REST")
-    public ResponseEntity<String> update(Person person, Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+    public ResponseEntity<MessageResponse> update(Person person, Long id)
+            throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
         personEventService.update(id, personMapper.dtoToDomain(person));
-        return ResponseEntity.status(HttpStatus.OK).body("Person updated successfully");
+
+        MessageResponse messageResponse = new MessageResponse("Person update requested successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
     }
 
     @Override
     @Audit(action = "Delete Person via REST")
-    public ResponseEntity<Void> delete(Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
+    public ResponseEntity<MessageResponse> delete(Long id) throws ExecutionException, JsonProcessingException, InterruptedException, TimeoutException {
         personEventService.delete(id);
-        return ResponseEntity.noContent().build();
+
+        MessageResponse messageResponse = new MessageResponse("Person deleted requested successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
     }
 }
