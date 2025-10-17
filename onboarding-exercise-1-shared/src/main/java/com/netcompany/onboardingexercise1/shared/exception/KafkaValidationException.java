@@ -8,7 +8,7 @@ public class KafkaValidationException extends RuntimeException {
     private final transient EventErrorResponse eventErrorResponse;
 
     public KafkaValidationException(EventErrorResponse eventErrorResponse) {
-        super(eventErrorResponse.getMessage());
+        super(eventErrorResponse.getMessage() + eventErrorResponse.getViolations());
         this.eventErrorResponse = eventErrorResponse;
     }
 }

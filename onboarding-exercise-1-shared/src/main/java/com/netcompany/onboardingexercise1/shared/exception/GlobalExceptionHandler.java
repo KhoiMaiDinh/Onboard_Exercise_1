@@ -128,6 +128,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(UnexpectedException.class)
+    public ResponseEntity<RestErrorResponse> handleUnexpectedCustom(BaseException ex, HttpServletRequest request) {
+
+        int status = ex.getHttpStatus().value();
+        logger.error("Unexpected error occurred", ex);
+
+        RestErrorResponse error = RestErrorResponse.builder()
+                                                   .timestamp(Instant.now())
+                                                   .status(status)
+                                                   .error(ex.getErrorCode().getCode())
+                                                   .message(ex.getMessage())
+                                                   .path(request.getRequestURI())
+                                                   .stackTrace(getStackTrace(ex))
+                                                   .build();
+
+        return ResponseEntity.status(status).body(error);
+    }
+
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<RestErrorResponse> handleCustom(BaseException ex, HttpServletRequest request) {
 
