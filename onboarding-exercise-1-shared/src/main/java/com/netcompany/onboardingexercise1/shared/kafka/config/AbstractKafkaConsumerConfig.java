@@ -15,14 +15,14 @@ import org.springframework.util.backoff.FixedBackOff;
 @Slf4j
 public abstract class AbstractKafkaConsumerConfig {
 
-    protected List<Class<? extends Exception>> nonRetryableExceptions =
-            List.of(IllegalArgumentException.class, NullPointerException.class, KafkaDeserializationException.class, KafkaValidationException.class);
-
     protected final KafkaTemplate<Object, Object> kafkaTemplate;
 
     protected final KafkaProperties kafkaProperties;
 
     protected final String topic;
+
+    protected List<Class<? extends Exception>> nonRetryableExceptions =
+            List.of(IllegalArgumentException.class, NullPointerException.class, KafkaDeserializationException.class, KafkaValidationException.class);
 
     protected AbstractKafkaConsumerConfig(String topic, KafkaTemplate<Object, Object> kafkaTemplate, KafkaProperties kafkaProperties) {
         this.topic = topic;
@@ -58,30 +58,65 @@ public abstract class AbstractKafkaConsumerConfig {
         return new DeadLetterPublishingRecoverer(kafkaTemplate, (consumerRecord, exception) -> {
             Throwable root = unwrap(exception);
             if (isNonRetryable(root)) {
+                logException("DLT", root, consumerRecord);
                 return new TopicPartition(getDeadLetterTopic(), consumerRecord.partition());
             } else {
+                logException("RETRY", root, consumerRecord);
                 return new TopicPartition(getRetryTopic(), consumerRecord.partition());
             }
         });
     }
 
     protected DeadLetterPublishingRecoverer retryPublishingRecoverer() {
-        return new DeadLetterPublishingRecoverer(kafkaTemplate,
-                (consumerRecord, exception) -> new TopicPartition(getDeadLetterTopic(), consumerRecord.partition()));
+        return new DeadLetterPublishingRecoverer(kafkaTemplate, (consumerRecord, exception) -> {
+            Throwable root = unwrap(exception);
+            logException("DLT (from retry)", root, consumerRecord);
+            return new TopicPartition(getDeadLetterTopic(), consumerRecord.partition());
+        });
     }
 
     public DefaultErrorHandler mainErrorHandler() {
-        return new DefaultErrorHandler(mainPublishingRecoverer(), new FixedBackOff(0, 0));
+        return mainErrorHandler(0L, 0L);
+    }
+
+    public DefaultErrorHandler mainErrorHandler(long intervalMs, long maxAttempts) {
+        FixedBackOff backOff = new FixedBackOff(intervalMs, maxAttempts);
+        return new DefaultErrorHandler(mainPublishingRecoverer(), backOff);
     }
 
     public DefaultErrorHandler retryErrorHandler() {
-        ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(2);
-        backOff.setInitialInterval(1000L);
-        backOff.setMultiplier(2.0);
-        backOff.setMaxInterval(2000L);
+        return retryErrorHandler(2, 1000L, 2.0, 2000L);
+    }
+
+    public DefaultErrorHandler retryErrorHandler(
+            int maxRetries,
+            long initialIntervalMs,
+            double multiplier,
+            long maxIntervalMs
+    ) {
+        ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(maxRetries);
+        backOff.setInitialInterval(initialIntervalMs);
+        backOff.setMultiplier(multiplier);
+        backOff.setMaxInterval(maxIntervalMs);
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(retryPublishingRecoverer(), backOff);
         nonRetryableExceptions.forEach(errorHandler::addNotRetryableExceptions);
         return errorHandler;
+    }
+
+    private void logException(String destination, Throwable exception, org.apache.kafka.clients.consumer.ConsumerRecord<?, ?> consumerRecord) {
+        String message = String.format("Routing to %s due to exception [%s] for record [topic=%s, partition=%d, offset=%d, key=%s]",
+                destination,
+                exception.getClass().getSimpleName() + ": " + exception.getMessage(),
+                consumerRecord.topic(),
+                consumerRecord.partition(),
+                consumerRecord.offset(),
+                consumerRecord.key());
+
+        if ("RETRY".equals(destination)) {
+            log.info(message, exception);
+        } else {
+            log.error(message, exception);
+        }
     }
 }
