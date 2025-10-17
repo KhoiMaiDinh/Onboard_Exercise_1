@@ -37,7 +37,7 @@ public class PersonEntity {
     @Column(name = "TAX_DEBT", nullable = false)
     private BigDecimal taxDebt;
 
-    @Column(name = "CREATED_DTTM", nullable = false)
+    @Column(name = "CREATED_DTTM", nullable = false, updatable = false, insertable = false)
     private Instant createdAt;
 
     @Column(name = "DELETED_DTTM")

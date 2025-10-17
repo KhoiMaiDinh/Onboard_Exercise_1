@@ -56,9 +56,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void handleTaxCalculation(String taxNumber, BigDecimal taxAmount) {
-        PersonDomain personDomain = findByTaxNumber(taxNumber);
-        personDomain.addTaxDebt(taxAmount);
-        update(personDomain.getId(), personDomain);
+        personPort.handleTaxCalculationAtomic(taxNumber, taxAmount);
     }
 
     @Override
