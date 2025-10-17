@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: onboarding-config
+data:
+  APP_DEBUG_STACKTRACE: "false"
+  LOGGING_FILE_NAME: "logging.file.name=logs/app.log"
+
+  SERVER_PORT: "8080"
+  SERVER_SERVLET_CONTEXT_PATH: "/api"
+
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/oe1_db?currentSchema=oe1_db"
+
+
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+  SPRING_DATASOURCE_MAXIMUM_POOL_SIZE: "10"
+  SPRING_DATASOURCE_MINIMUM_IDLE: "3"
+  SPRING_DATASOURCE_IDLE_TIMEOUT: "300000"
+  SPRING_DATASOURCE_MAX_LIFETIME: "600000"
+  SPRING_DATASOURCE_CONNECTION_TIMEOUT: "30000"
+
+
+
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+  SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+  SPRING_JPA_SHOW_SQL: "true"
+
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka-0.kafka:9092,kafka-1.kafka:9092,kafka-2.kafka:9092"
+  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: "org.apache.kafka.common.serialization.IntegerSerializer"
+  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: "org.apache.kafka.common.serialization.StringSerializer"
+
+
+  SPRING_KAFKA_CONSUMER_GROUP_ID: "onboarding-excercise-1-listener-group"
+  SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: "org.apache.kafka.common.serialization.IntegerDeserializer"
+  SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: "org.apache.kafka.common.serialization.StringDeserializer"
+
+  ONBOARDING_PERSON_TOPIC: "person-event-topic"
+  ONBOARDING_TAX_CALC_TOPIC: "tax-calculation-topic"
+  TEST_TOPIC: "test-1-topic"
+
+  MANUAL_CONSUMER_GROUP_ID: "onboarding-excercise-1-manual-consumer-group"
+  PULL_DEFAULT_MAX: "10"
+
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health"

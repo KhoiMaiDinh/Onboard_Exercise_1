@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onboarding-cron-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onboarding-cron-app
+  template:
+    metadata:
+      labels:
+        app: onboarding-cron-app
+        network/kafka-network: "true"
+    spec:
+      containers:
+        - name: onboarding-cron-app
+          image: khoimdev/onboarding-exercise-1-cron:latest
+          imagePullPolicy: Always
+          env:
+            # From ConfigMap (non-sensitive)
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+          envFrom:
+            - configMapRef:
+                name: onboarding-cron-config
+

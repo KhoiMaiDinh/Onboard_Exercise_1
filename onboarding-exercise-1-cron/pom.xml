@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.netcompany</groupId>
+    <artifactId>all-apps</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>onboarding-exercise-1-cron</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>onboarding-exercise-1-cron-app</module>
+    <module>onboarding-exercise-1-cron-adapter</module>
+  </modules>
+
+  <properties>
+    <jib-image.name>khoimdev/onboarding-exercise-1-cron</jib-image.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+  </dependencies>
+</project>

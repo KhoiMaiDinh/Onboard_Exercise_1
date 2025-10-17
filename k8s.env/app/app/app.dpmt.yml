@@ -1,0 +1,186 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onboarding-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: onboarding-app
+  template:
+    metadata:
+      labels:
+        app: onboarding-app
+        network/kafka-network: "true"
+
+    spec:
+      containers:
+        - name: onboarding-app
+          image: khoimdev/onboarding-exercise-1-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: SERVER_ADDRESS
+              value: "0.0.0.0"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+            # From ConfigMap (non-sensitive)
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: APP_DEBUG_STACKTRACE
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: APP_DEBUG_STACKTRACE
+            - name: LOGGING_FILE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: LOGGING_FILE_NAME
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SERVER_SERVLET_CONTEXT_PATH
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SERVER_PORT
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+            - name: SPRING_DATASOURCE_MAXIMUM_POOL_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_MAXIMUM_POOL_SIZE
+            - name: SPRING_DATASOURCE_MINIMUM_IDLE
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_MINIMUM_IDLE
+            - name: SPRING_DATASOURCE_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_IDLE_TIMEOUT
+            - name: SPRING_DATASOURCE_MAX_LIFETIME
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_MAX_LIFETIME
+            - name: SPRING_DATASOURCE_CONNECTION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_DATASOURCE_CONNECTION_TIMEOUT
+
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: SPRING_JPA_SHOW_SQL
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_JPA_SHOW_SQL
+
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            - name: SPRING_KAFKA_PRODUCER_KEY_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_PRODUCER_KEY_SERIALIZER
+            - name: SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER
+            - name: SPRING_KAFKA_ADMIN_PROPERTIES_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            - name: SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            - name: SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER
+            - name: SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: SPRING_KAFKA_CONSUMER_GROUP_ID
+
+            - name: ONBOARDING_PERSON_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: ONBOARDING_PERSON_TOPIC
+            - name: ONBOARDING_TAX_CALC_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: ONBOARDING_TAX_CALC_TOPIC
+
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+            - name: TEST_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: TEST_TOPIC
+            - name: MANUAL_CONSUMER_GROUP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: MANUAL_CONSUMER_GROUP_ID
+            - name: PULL_DEFAULT_MAX
+              valueFrom:
+                configMapKeyRef:
+                  name: onboarding-config
+                  key: PULL_DEFAULT_MAX
