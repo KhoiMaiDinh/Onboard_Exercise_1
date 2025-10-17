@@ -9,6 +9,7 @@ import com.netcompany.onboardingexercise1.shared.exception.ImmutableFieldExcepti
 import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -51,12 +52,16 @@ public class PersonServiceImpl implements PersonService {
         }
 
         personDomain.setId(id);
-        return personPort.update(personDomain);
+        return personPort.save(personDomain);
     }
 
     @Override
+    @Transactional
     public void handleTaxCalculation(String taxNumber, BigDecimal taxAmount) {
-        personPort.handleTaxCalculationAtomic(taxNumber, taxAmount);
+        PersonDomain existingPerson = personPort.findAndLockByTaxNumber(taxNumber);
+
+        existingPerson.addTaxDebt(taxAmount);
+        personPort.save(existingPerson);
     }
 
     @Override

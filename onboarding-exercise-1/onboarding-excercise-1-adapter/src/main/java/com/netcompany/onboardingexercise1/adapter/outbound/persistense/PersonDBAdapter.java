@@ -9,14 +9,12 @@ import com.netcompany.onboardingexercise1.core.domain.dto.PersonFilter;
 import com.netcompany.onboardingexercise1.core.port.outbound.persistence.PersonPort;
 import com.netcompany.onboardingexercise1.shared.enums.ErrorCode;
 import com.netcompany.onboardingexercise1.shared.exception.NotFoundException;
-import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -39,14 +37,6 @@ public class PersonDBAdapter implements PersonPort {
     }
 
     @Override
-    @Transactional
-    public PersonDomain update(PersonDomain personDomain) {
-        PersonEntity personEntityUpdated = personRepository.save(personMapper.domainToEntity(personDomain));
-
-        return personMapper.entityToDomain(personRepository.save(personEntityUpdated));
-    }
-
-    @Override
     public PersonDomain findById(Long id) {
         return personRepository.findByIdAndDeletedAtIsNull(id)
                                .map(personMapper::entityToDomain)
@@ -54,13 +44,12 @@ public class PersonDBAdapter implements PersonPort {
     }
 
     @Override
-    @Transactional
-    public void handleTaxCalculationAtomic(String taxNumber, BigDecimal amount) {
-        PersonEntity personEntity = personRepository.findAndLockByTaxNumber(taxNumber)
-                                              .orElseThrow(() -> new NotFoundException(ErrorCode.ONBOARDING_NOTFOUND_002, "taxNumber", taxNumber));
-
-        personEntity.setTaxDebt(personEntity.getTaxDebt().add(amount));
+    public PersonDomain findAndLockByTaxNumber(String taxNumber) {
+        return personRepository.findAndLockByTaxNumber(taxNumber)
+                               .map(personMapper::entityToDomain)
+                               .orElseThrow(() -> new NotFoundException(ErrorCode.ONBOARDING_NOTFOUND_002, "taxNumber", taxNumber));
     }
+
 
     @Override
     public PersonDomain findByTaxNumber(String taxNumber) {
