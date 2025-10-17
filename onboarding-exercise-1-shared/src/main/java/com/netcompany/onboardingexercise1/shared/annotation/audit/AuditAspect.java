@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -70,6 +71,19 @@ public class AuditAspect {
             log.warn("Failed to serialize audit result", e);
             log.info("AUDIT RESULT (raw): {}", content);
         }
+    }
+
+    @AfterThrowing(pointcut = "auditPointcut()", throwing = "ex")
+    public void logException(JoinPoint joinPoint, Throwable ex) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        Audit audit = method.getAnnotation(Audit.class);
+        String action = audit.action();
+
+        log.error("---- AUDIT EXCEPTION [{}] ----", action);
+        log.error("Method: {}.{}", method.getDeclaringClass().getSimpleName(), method.getName());
+        log.error("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
+        log.error("Exception: {} - {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
     }
 
     private boolean isHttpRequestContextAvailable() {
