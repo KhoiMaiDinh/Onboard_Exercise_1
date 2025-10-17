@@ -1,6 +1,7 @@
 package com.netcompany.onboardingexercise1.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.netcompany.onboardingexercise1.shared.constant.RegexPatterns;
 import com.netcompany.onboardingexercise1.shared.dto.Create;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,12 +22,12 @@ public class Person {
 
     @NotBlank(message = "First name is required")
     @Size(max = 100)
-    @Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters")
+    @Pattern(regexp = RegexPatterns.ALPHA_WITH_SPACES, message = "Last name must contain only letters and spaces")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
     @Size(max = 100)
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters")
+    @Pattern(regexp = RegexPatterns.ALPHA_WITH_SPACES, message = "Last name must contain only letters and spaces")
     private String lastName;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -36,7 +37,7 @@ public class Person {
 
     @NotBlank(groups = Create.class, message = "Tax number is required")
     @Size(max = 32)
-    @Pattern(regexp = "^[A-Z0-9]+$", message = "Tax number must contain only uppercase letters and numbers")
+    @Pattern(regexp = RegexPatterns.UPPERCASE_ALPHANUMERIC, message = "Tax number must contain only uppercase letters and numbers")
     private String taxNumber;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
